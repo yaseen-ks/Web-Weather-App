@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <img src="/static/images/logo.png" alt="Logo" class="logo">
+        <div class="search-box">
+            <input type="text" id="city" placeholder="Enter City" />
+            <button onclick="getWeather()">Search</button>
+        </div>
+        <div id="weather-info">
+            <h2 id="time"></h2>
+            <h3 id="condition"></h3>
+            <p id="description"></p>
+            <p>Temperature: <span id="temperature"></span>°C</p>
+            <p>Pressure: <span id="pressure"></span> hPa</p>
+            <p>Humidity: <span id="humidity"></span>%</p>
+            <p>Wind Speed: <span id="wind"></span> m/s</p>
+        </div>
+    </div>
+    <script>
+        function getWeather() {
+            const city = document.getElementById('city').value;
+            fetch('/get_weather', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `city=${city}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    document.getElementById('time').textContent = `Current Time: ${data.time}`;
+                    document.getElementById('condition').textContent = data.condition;
+                    document.getElementById('description').textContent = data.description;
+                    document.getElementById('temperature').textContent = data.temperature;
+                    document.getElementById('pressure').textContent = data.pressure;
+                    document.getElementById('humidity').textContent = data.humidity;
+                    document.getElementById('wind').textContent = data.wind;
+                }
+            })
+            .catch(error => alert('Error: ' + error));
+        }
+    </script>
+</body>
+</html>
